@@ -21,4 +21,16 @@ class Grid2D
         unsigned short int current;
         double time;
 };
+
+enum Stability2D
+{
+    Stable,
+    TimeStepToHigh,
+    WaveLengthToSmall
+};
+
+Stability2D checkGridStability(Grid2D * grid);
+
+Stability2D checkWaveStability(Grid2D * grid,long double frequency);
+
 #endif

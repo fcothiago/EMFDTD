@@ -1,27 +1,26 @@
 #include <iostream>
 #include <TH.h>
-#include <matplotlibcpp.h>
-
-//namespace plot = matplotlibcpp;
+#include <plot2D.h>
+#include <string>
 
 int main(int argc,char * argv[])
 {
     //std::vector<double> y = {1, 3, 2, 4};
     //plot::plot(y);
     //plot::show();
-    //std::cout << "Hello Eletromagnetic World" << std::endl;
+    std::cout << sizeof(double) << std::endl;
 
-    THGrid * grid = new THGrid(20,20,1,0.1);
-    int x = 10;
-    int y = 10;
+    THGrid * grid = new THGrid(100,100,1E-7,10);
+    int x = 50;
+    int y = 50;
     int xy = grid->grid.xy(x,y);
-    THSinHz * wave = new THSinHz(grid,x,y,10,10,10);
-    for(int i = 0 ; i <= 10 ; i++)
+    THSinHz * wave = new THSinHz(grid,x,y,100.0,4.0E6,0);
+    THPlot plot = THPlot(grid);
+    for(int i = 0 ; i <= 10000 ; i++)
     {
         grid->update();
         wave->updateH();
-        std::cout << std::endl;
     }
-
+    plot.plotHz("out/1.png");
     return 0;
 }

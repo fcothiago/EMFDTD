@@ -3,15 +3,14 @@
 
 #include <2D.h>
 #include <cmath>
-#include <iostream>
 
 class THCell
 {
     public:
         THCell();
-        double Ex,Ey,Hz,Jx,Jy,Mz;
-        double Epsx, Epsy,Rhoxe,Rhoye;
-        double Muz, Rhozm;
+        long double Ex,Ey,Hz,Jx,Jy,Mz;
+        long double Epsx, Epsy,Rhoxe,Rhoye;
+        long double Muz, Rhozm;
         void updateE(Space2D & grid,THCell * cells, double & t,int & x,int & y);
         void updateH(Space2D & grid,THCell * cells, double & t,int & x,int & y);
 };
@@ -28,13 +27,12 @@ class THGrid : public Grid2D
 class THSinHz
 {
     public:
-        THSinHz(THGrid * grid,int x,int y,double amplitude,double frequency,double phase);
+        THSinHz(THGrid * grid,int x,int y,long double amplitude,long double frequency,long double phase);
         void updateH();
     private:
-        double amplitude,frequency,phase;
+        long double amplitude,frequency,phase;
         int x,y;
         THGrid * grid;
 };
 
-void THPlotHZ(THGrid * grid);
 #endif
