@@ -1,2 +1,2 @@
 # EMFDTD
-My implemetation of FDTD for Eletromagnetics.
+My implemetation of FDTD for Eletromagnetics. 
