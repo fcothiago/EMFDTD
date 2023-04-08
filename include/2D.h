@@ -3,21 +3,15 @@
 
 typedef struct
 {
-    double dt,ds;
+    long double dt,ds;
     unsigned int nx,ny;
-    inline unsigned int xy(int x,int y)
-    { 
-        x = x >= 0 ? x % this->nx : nx - ((-x) % this->nx );
-        y = y >= 0 ? y % this->ny : ny - ((-y) % this->ny );
-        return x + y*this->nx;
-    }
 }Space2D;
 
 class Grid2D
 {
     public:
         Grid2D(unsigned int nx, unsigned int ny, double dt, double ds);
-        Space2D grid;
+        Space2D space;
         unsigned short int current;
         double time;
 };

@@ -11,8 +11,6 @@ class THCell
         long double Ex,Ey,Hz,Jx,Jy,Mz;
         long double Epsx, Epsy,Rhoxe,Rhoye;
         long double Muz, Rhozm;
-        void updateE(Space2D & grid,THCell * cells, double & t,int & x,int & y);
-        void updateH(Space2D & grid,THCell * cells, double & t,int & x,int & y);
 };
 
 class THGrid : public Grid2D
@@ -21,7 +19,6 @@ class THGrid : public Grid2D
         THGrid(unsigned int nx, unsigned int ny, double dt, double ds);
         ~THGrid();
         THCell * cells[2];
-        void update();
 };
 
 class THSinHz
@@ -34,5 +31,7 @@ class THSinHz
         int x,y;
         THGrid * grid;
 };
+
+void update(THGrid & grid);
 
 #endif

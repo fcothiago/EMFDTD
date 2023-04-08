@@ -1,5 +1,5 @@
 #include <TH.h>
-#include <constants.h>
+#include <utils.h>
 
 THGrid::THGrid(unsigned int nx, unsigned int ny, double dt, double ds):Grid2D(nx,ny,dt,ds)
 {
@@ -26,70 +26,81 @@ THCell::THCell()
     this->Rhozm = 0;
 }
  
-void THCell::updateE(Space2D & grid,THCell * cells, double & t,int & x,int & y)
+void updateE(THGrid & grid,int & x,int & y)
 {   
-    const unsigned int lx = grid.xy(x-1,y);
-    const unsigned int ly = grid.xy(x,y-1);
-    const unsigned int xy = grid.xy(x,y);
+    const unsigned int lx = XY_TO_INDEX(x-1,y,grid.space.nx,grid.space.ny);
+    const unsigned int ly = XY_TO_INDEX(x,y-1,grid.space.nx,grid.space.ny);
+    const unsigned int xy = XY_TO_INDEX(x,y,grid.space.nx,grid.space.ny);
 
-    const long double Coef_eex = (2*this->Epsx-grid.dt*this->Rhoxe)
-                    /(2*this->Epsx+grid.dt*this->Rhoxe);
-    const long double Coef_ehx = (2*grid.dt)
-                    /((2*this->Epsx+grid.dt*this->Rhoxe)*grid.ds);
-    const long double Coef_eix = (-2*grid.dt)
-                    /(2*this->Epsx+grid.dt*this->Rhoxe);
+    THCell * next = & grid.cells[1-grid.current][xy] ;
+    THCell * old = grid.cells[grid.current] ;
 
-    const long double Coef_eey = (2*this->Epsy-grid.dt*this->Rhoye)
-                    /(2*this->Epsy+grid.dt*this->Rhoye);
-    const long double Coef_ehy = (- 2*grid.dt)
-                    /((2*this->Epsy+grid.dt*this->Rhoye)*grid.ds);
-    const long double Coef_eiy = (-2*grid.dt)
-                    /(2*this->Epsy+grid.dt*this->Rhoye);
+    const long double Coef_eex = (2*next->Epsx-grid.space.dt*next->Rhoxe)
+                    /(2*next->Epsx+grid.space.dt*next->Rhoxe);
+    const long double Coef_ehx = (2*grid.space.dt)
+                    /((2*next->Epsx+grid.space.dt*next->Rhoxe)*grid.space.ds);
+    const long double Coef_eix = (-2*grid.space.dt)
+                    /(2*next->Epsx+grid.space.dt*next->Rhoxe);
 
-    this->Ex = Coef_eex*cells[xy].Ex
-            + Coef_ehx*(cells[xy].Hz - cells[ly].Hz)
-            + Coef_eix*(cells[xy].Jx);
+    const long double Coef_eey = (2*next->Epsy-grid.space.dt*next->Rhoye)
+                    /(2*next->Epsy+grid.space.dt*next->Rhoye);
+    const long double Coef_ehy = (- 2*grid.space.dt)
+                    /((2*next->Epsy+grid.space.dt*next->Rhoye)*grid.space.ds);
+    const long double Coef_eiy = (-2*grid.space.dt)
+                    /(2*next->Epsy+grid.space.dt*next->Rhoye);
+
+    next->Ex = Coef_eex*old[xy].Ex
+            + Coef_ehx*(old[xy].Hz - old[ly].Hz)
+            + Coef_eix*(old[xy].Jx);
 
 
-    this->Ey = Coef_eey*cells[xy].Ey 
-            + Coef_ehy*(cells[xy].Hz - cells[lx].Hz) 
-            + Coef_eiy*(cells[xy].Jy);
+    next->Ey = Coef_eey*old[xy].Ey 
+            + Coef_ehy*(old[xy].Hz - old[lx].Hz) 
+            + Coef_eiy*(old[xy].Jy);
 }
 
-void THCell::updateH(Space2D & grid,THCell * cells, double & t,int & x,int & y)
+void updateH(THGrid & grid,int & x,int & y)
 {
-    const long unsigned int ux = grid.xy(x+1,y);
-    const long unsigned int uy = grid.xy(x,y+1);
-    const long unsigned int xy = grid.xy(x,y);
+    const long unsigned int ux = XY_TO_INDEX(x+1,y,grid.space.nx,grid.space.ny);
+    const long unsigned int uy = XY_TO_INDEX(x,y+1,grid.space.nx,grid.space.ny);
+    const long unsigned int xy = XY_TO_INDEX(x,y,grid.space.nx,grid.space.ny);
 
-    const long double Coef_hhz = (2*this->Muz-grid.dt*this->Rhozm)
-                            /(2*this->Muz+grid.dt*this->Rhozm);
-    const long double Coef_hex = (2*grid.dt)
-                            /((2*this->Muz+grid.dt*this->Rhozm)*grid.ds);
-    const long double Coef_hzm = -(2*grid.dt)
-                            /(2*this->Muz+grid.dt*this->Rhozm);
-    
-    this->Hz = Coef_hhz*cells[xy].Hz + Coef_hex*(cells[uy].Ex-cells[xy].Ex) - Coef_hex*(cells[ux].Ey - cells[xy].Ey) + Coef_hzm*cells[xy].Mz;
+    THCell * next = & grid.cells[1-grid.current][xy] ;
+    THCell * old = grid.cells[grid.current] ;
 
+    const long double Coef_hhz = (2*next->Muz- grid.space.dt*next->Rhozm)
+                            /(2*next->Muz+ grid.space.dt*next->Rhozm);
+
+    const long double Coef_hex = (2*grid.space.dt)
+                            /((2*next->Muz+ grid.space.dt*next->Rhozm)*grid.space.ds);
+
+    const long double Coef_hzm = -(2*grid.space.dt)
+                            /(2*next->Muz+ grid.space.dt*next->Rhozm);
+
+    next->Hz = Coef_hhz*old[xy].Hz
+               + Coef_hex*(old[uy].Ex-old[xy].Ex) 
+               - Coef_hex*(old[ux].Ey - old[xy].Ey) 
+               + Coef_hzm*old[xy].Mz;
 }
 
-void THGrid::update()
+void update(THGrid & grid)
 {
-    for(int y = 0; y < this->grid.ny ; y++)
+    for (int i = 0; i < grid.space.nx*grid.space.ny ; i++)
     {
-        for(int x = 0; x < this->grid.nx ; x++)
+        int x = INDEX_TO_X(i,grid.space.nx);
+        int y = INDEX_TO_Y(i,grid.space.nx);
+
+        if(!grid.current)
         {
-            int xy = this->grid.xy(x,y);
-            if(!this->current)
-            {
-               this->cells[1-this->current][xy].updateE(this->grid,this->cells[this->current],this->time,x,y);
-            }
-            else
-            {
-               this->cells[1-this->current][xy].updateH(this->grid,this->cells[this->current],this->time,x,y);
-            }
+            updateE(grid,x,y);
         }
+        else
+        {
+            updateH(grid,x,y);
+        }  
     }
-    time += 0.5*this->grid.dt;
-    this->current = 1 - this->current;
+
+    grid.time += 0.5*grid.space.dt;
+    grid.current = 1 - grid.current;
+
 }
