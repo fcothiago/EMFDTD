@@ -8,9 +8,9 @@ class THCell
 {
     public:
         THCell();
-        long double Ex,Ey,Hz,Jx,Jy,Mz;
-        long double Epsx, Epsy,Rhoxe,Rhoye;
-        long double Muz, Rhozm;
+        double Ex,Ey,Hz,Jx,Jy,Mz;
+        double Epsx, Epsy,Rhoxe,Rhoye;
+        double Muz, Rhozm;
 };
 
 class THGrid : public Grid2D
@@ -24,14 +24,14 @@ class THGrid : public Grid2D
 class THSinHz
 {
     public:
-        THSinHz(THGrid * grid,int x,int y,long double amplitude,long double frequency,long double phase);
+        THSinHz(THGrid * grid,int x,int y,double amplitude,double frequency,double phase);
         void updateH();
-    private:
-        long double amplitude,frequency,phase;
+        double amplitude,frequency,phase;
         int x,y;
         THGrid * grid;
 };
 
-void update(THGrid & grid);
+void update(THGrid * grid);
+void update(THSinHz * sinHz);
 
 #endif

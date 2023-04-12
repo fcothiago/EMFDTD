@@ -14,5 +14,4 @@
 #define INDEX_TO_X(index,nx) ( REMAINDER(index,nx) )
 #define INDEX_TO_Y(index,nx) ( index/nx )
 
-
 #endif

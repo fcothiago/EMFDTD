@@ -3,7 +3,7 @@
 
 typedef struct
 {
-    long double dt,ds;
+    double dt,ds;
     unsigned int nx,ny;
 }Space2D;
 
@@ -25,6 +25,6 @@ enum Stability2D
 
 Stability2D checkGridStability(Grid2D * grid);
 
-Stability2D checkWaveStability(Grid2D * grid,long double frequency);
+Stability2D checkWaveStability(Grid2D * grid,double frequency);
 
 #endif
