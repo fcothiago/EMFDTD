@@ -28,7 +28,7 @@ Stability2D checkGridStability(Grid2D * grid)
     }
 }
 
-Stability2D checkWaveStability(Grid2D * grid,long double frequency)
+Stability2D checkWaveStability(Grid2D * grid,double frequency)
 {
     if(grid->space.ds <= 0.5*c_0/frequency)
         return Stable;
