@@ -2,30 +2,14 @@
 #include <utils.h>
 #include <iostream>
 
-Grid2D::Grid2D(unsigned int nx, unsigned int ny, double dt, double ds)
+Grid2D::Grid2D(unsigned int nx, unsigned int ny, double ds)
 {
     this->space.nx = nx;
     this->space.ny = ny;
-    this->space.dt = dt;
+    this->space.dt = ds/(2*c_0);
     this->space.ds = ds;
     this->current = 0;
     this->time = 0.0;
-}
-
-Stability2D checkGridStability(Grid2D * grid)
-{
-    double dt = grid->space.dt;
-    double ds = grid->space.ds;
-    double testvalue = (ds)/(2*c_0);
-
-    if(dt <= testvalue)
-    {
-        return Stable;
-    }
-    else
-    {   std::cout << "Warining: Time Step to High. Current dt = " << dt << "s Min Value " <<  testvalue << "s" << std::endl;
-        return TimeStepToHigh;
-    }
 }
 
 Stability2D checkWaveStability(Grid2D * grid,double frequency)

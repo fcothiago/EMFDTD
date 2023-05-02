@@ -3,15 +3,17 @@
 #include <TH.h>
 #include <vector>
 #include <string>
+
 class THPlot
 {
     public:
-        THPlot(THGrid * grid);
+        THPlot(int n,THGrid * grid);
         ~THPlot();
-        void capture();
         void plotHz(std::string path);
-    private:
-        std::vector<THCell *> cells;
-        THGrid * grid;
+        THCell ** prints;
+        int capture_counter,capture_limit,nx,ny;
 };
+
+void capture(THGrid * grid, THPlot * plot);
+
 #endif

@@ -10,7 +10,7 @@ typedef struct
 class Grid2D
 {
     public:
-        Grid2D(unsigned int nx, unsigned int ny, double dt, double ds);
+        Grid2D(unsigned int nx, unsigned int ny, double ds);
         Space2D space;
         unsigned short int current;
         double time;
@@ -23,7 +23,7 @@ enum Stability2D
     WaveLengthToSmall
 };
 
-Stability2D checkGridStability(Grid2D * grid);
+//Stability2D checkGridStability(Grid2D * grid);
 
 Stability2D checkWaveStability(Grid2D * grid,double frequency);
 
